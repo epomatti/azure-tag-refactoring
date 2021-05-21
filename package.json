@@ -1,0 +1,24 @@
+{
+  "name": "azure-tag-refactoring",
+  "version": "1.0.0",
+  "description": "Refactoring for tags of Azure resources.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/epomatti/azure-tag-refactoring.git"
+  },
+  "author": "Evandro Pomatti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/epomatti/azure-tag-refactoring/issues"
+  },
+  "homepage": "https://github.com/epomatti/azure-tag-refactoring#readme",
+  "dependencies": {
+    "@azure/arm-resources": "^4.1.0",
+    "@azure/ms-rest-nodeauth": "^3.0.10",
+    "dotenv": "^9.0.2"
+  }
+}
