@@ -1,38 +1,72 @@
-import * as msRestNodeAuth from "@azure/ms-rest-nodeauth";
 import { ResourceManagementClient } from "@azure/arm-resources";
+import { GenericResourceExpanded } from "@azure/arm-resources/esm/models";
+import * as api from "./api"
+import * as config from "./config"
 
-require('dotenv').config()
-const fs = require('fs');
+require('dotenv').config();
 
-const clientId = process.env["CLIENT_ID"];
-const secret = process.env["APPLICATION_SECRET"];
-const tenantId = process.env["TENANT_ID"];
-const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"];
-const resourceGroup = process.env["RESOURCE_GROUP"]
+const subscriptions = config.readSubscriptionsJson();
 
-let rawdata = fs.readFileSync('tags.json');
-let tagConfig = JSON.parse(rawdata);
+// Tag operations
 
-msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId).then((creds) => {
-  const client = new ResourceManagementClient(creds, subscriptionId);
-
-  client.resourceGroups.get(resourceGroup).then(rg => {
-
-    const tags = rg.tags;
-    console.log(tags);
-
-    const value = tags[tagConfig[0].deprecatedTag];
-    tags[tagConfig[0].newTag] = value;
-    delete tags[tagConfig[0].deprecatedTag];
-
-    var parameters = { tags: tags };
-    client.resourceGroups.update(resourceGroup, parameters).catch(err => {
-      console.error(err);
-    })
-
-    console.log(tags);
-
+const refactorTags = (tags: any): any => {
+  const tagConfig = config.readConfigJson();
+  tagConfig.forEach(tag => {
+    const value = tags[tag.deprecatedTag];
+    tags[tag.newTag] = value;
+    delete tags[tag.deprecatedTag];
   })
-}).catch((err) => {
-  console.error(err);
+  return tags;
+}
+
+const refactorResourceGroupTags = (client: ResourceManagementClient, id: string, tags: any) => {
+  const newTags = refactorTags(tags);
+  var parameters = { tags: newTags };
+  client.resourceGroups.update(id, parameters).catch(err => {
+    // TODO implement proper error treatment
+    console.error(err);
+  })
+}
+
+const refactorResourceTags = (client: ResourceManagementClient, resource: GenericResourceExpanded) => {
+  const newTags = refactorTags(resource.tags);
+  var parameters = { tags: newTags };
+  client.resources.updateById(resource.id, client.apiVersion, parameters).catch(err => {
+    // TODO implement proper error treatment
+    console.error(err);
+  })
+}
+
+// Elements
+
+const refactorAllResourceGroups = (client: ResourceManagementClient, rgs: string[]) => {
+  if (rgs) {
+    rgs.forEach(rgId => {
+      client.resourceGroups.get(rgId).then(rg => {
+        refactorResourceGroupTags(client, rg.id, rg.tags);
+      })
+    })
+  } else {
+    client.resourceGroups.list().then(list => {
+      list.forEach(rg => {
+        refactorResourceGroupTags(client, rg.id, rg.tags);
+      })
+    })
+  }
+}
+
+const refactorAllResources = (client: ResourceManagementClient) => {
+  client.resources.list().then(resources => {
+    resources.forEach(resource => {
+      refactorResourceTags(client, resource);
+    })
+  })
+}
+
+// Program Workflow
+subscriptions.forEach(subscription => {
+  api.getClient(subscription.id).then(client => {
+    refactorAllResourceGroups(client, subscription.rgs);
+    refactorAllResources(client);
+  })
 });
