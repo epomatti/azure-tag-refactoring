@@ -1,13 +1,13 @@
 # Azure Tag Renaming
 
-A script/program for refactoring (renaming) tags of all the elements, resources and resource grups, in a list of subscriptions on Azure Cloud.
+A script/program for refactoring (renaming) thousands of tags of all the elements, resources and resource grups, in a list of subscriptions on Azure Cloud.
 
 :construction: Under Construction :construction:
 
 Outstanding pending enhancements:
 
 - Error treatment
-- Asynchronous processing
+- Asynchronous processing (speed)
 - Review all possibilities for tag combinations
 - Minimal permissions for the App Registration
 - Reporting
@@ -111,5 +111,7 @@ az group delete -n "rg-testingtags-001" --yes
 
 ## Sources
 
+```
 https://docs.microsoft.com/en-us/samples/azure-samples/resource-manager-node-resources-and-groups/resource-manager-node-resources-and-groups/
 https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli
+```
