@@ -1,9 +1,7 @@
-import * as service from '../src/tags';
-
-require('dotenv').config();
+import Program from './program';
 
 let main = () => {
-    service.replaceAllTags();
+    new Program().replaceAllTags();
 }
 
 main();

@@ -1,0 +1,29 @@
+{
+    "general": {
+        "deleteTagsOnReplace": true,
+        "overrideExistingTag": false
+    },
+    "tagSwitches": [
+        {
+            "tag": "<This tag will be replaced with a new tag>",
+            "newTag": "<New tag with the old value>"
+        },
+        {
+            "tag": "<This tag will be replaced with a new tag>",
+            "newTag": "<New tag with the old value>"
+        }
+    ],
+    "subscriptions": [
+        {
+            "id": "<subscription_id>"
+        },
+        {
+            "id": "<subscription_id>",
+            "rgs": [
+                "<resourcegroup_name>",
+                "<resourcegroup_name>",
+                "<resourcegroup_name>"
+            ]
+        }
+    ]
+}
