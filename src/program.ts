@@ -1,14 +1,21 @@
 import { ResourceManagementClient } from "@azure/arm-resources";
 import { GenericResourceExpanded } from "@azure/arm-resources/esm/models";
-import Utils from "./utils"
+import Utils, { Config } from "./utils"
 
 class Program {
 
+    readonly utils: Utils;
+    readonly config: Config;
+
+    constructor() {
+        this.utils = new Utils();
+        this.config = this.utils.getConfig();
+    }
+
     replaceAllTags() {
-        const utils = new Utils();
-        const subscriptions = utils.getConfig().subscriptions
+        const subscriptions = this.config.subscriptions
         subscriptions.forEach(subscription => {
-            utils.getArmClient(subscription.id).then(client => {
+            this.utils.getArmClient(subscription.id).then(client => {
                 this.refactorAllResourceGroups(client, subscription.rgs);
                 this.refactorAllResources(client);
             })
@@ -27,44 +34,47 @@ class Program {
         if (rgs) {
             rgs.forEach(rgId => {
                 client.resourceGroups.get(rgId).then(rg => {
-                    this.refactorResourceGroupTags(client, rg.id, rg.tags);
+                    this.refactorResourceGroupTags(client, rg.name, rg.tags);
                 })
             })
         } else {
             client.resourceGroups.list().then(list => {
                 list.forEach(rg => {
-                    this.refactorResourceGroupTags(client, rg.id, rg.tags);
+                    this.refactorResourceGroupTags(client, rg.name, rg.tags);
                 })
             })
         }
     }
 
     refactorResourceTags(client: ResourceManagementClient, resource: GenericResourceExpanded) {
-        const newTags = this.refactorTags(resource.tags);
-        var parameters = { tags: newTags };
-        client.resources.updateById(resource.id, client.apiVersion, parameters).catch(err => {
-            // TODO implement proper error treatment
-            console.error(err);
-        })
+        if (resource.tags) {
+            const newTags = this.refactorTags(resource.tags);
+            var parameters = { tags: newTags };
+            client.resources.updateById(resource.id, client.apiVersion, parameters).catch(err => {
+                // TODO implement proper error treatment
+                console.error(err);
+            })
+        }
     }
 
-    refactorResourceGroupTags(client: ResourceManagementClient, id: string, tags: any) {
-        const newTags = this.refactorTags(tags);
-        var parameters = { tags: newTags };
-        client.resourceGroups.update(id, parameters).catch(err => {
-            // TODO implement proper error treatment
-            console.error(err);
-        })
+    refactorResourceGroupTags(client: ResourceManagementClient, name: string, tags: any) {
+        if (tags) {
+            const newTags = this.refactorTags(tags);
+            var parameters = { tags: newTags };
+            client.resourceGroups.update(name, parameters).catch(err => {
+                // TODO implement proper error treatment
+                console.error(err);
+            })
+        }
     }
 
     refactorTags(tags: any): any {
-        const config = new Utils().getConfig();
-        config.tagSwitches.forEach(tagSwitch => {
-            if (!tags[tagSwitch.newTag] || config.general.overrideExistingTag) {
+        this.config.tagSwitches.forEach(tagSwitch => {
+            if (!tags[tagSwitch.newTag] || this.config.general.overrideExistingTag) {
                 const value = tags[tagSwitch.tag];
                 tags[tagSwitch.newTag] = value;
             }
-            if (config.general.deleteTagsOnReplace) {
+            if (this.config.general.deleteTagsOnReplace) {
                 delete tags[tagSwitch.tag];
             }
         })

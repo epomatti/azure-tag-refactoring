@@ -4,6 +4,7 @@
   "description": "Refactoring for tags of Azure resources.",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node ./src/main.ts",
     "test": "jest"
   },
   "repository": {
