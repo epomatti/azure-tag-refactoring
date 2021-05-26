@@ -15,7 +15,7 @@ Give permissions to the app
 
 1. Iterates over a subscription list
 2. 
-
+https://github.com/kulshekhar/ts-jest
 
 ```
 [
@@ -28,6 +28,8 @@ Give permissions to the app
         "newTag": "Squad"
     }
 ]
+
+
 
 
 https://docs.microsoft.com/en-us/samples/azure-samples/resource-manager-node-resources-and-groups/resource-manager-node-resources-and-groups/

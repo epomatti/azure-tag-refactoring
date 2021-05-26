@@ -1,16 +1,14 @@
 import { ResourceManagementClient } from "@azure/arm-resources";
 import { GenericResourceExpanded } from "@azure/arm-resources/esm/models";
 import * as api from "./api"
-import * as config from "./config"
+import Config from "./config"
 
 require('dotenv').config();
 
-const subscriptions = config.readSubscriptionsJson();
-
 // Tag operations
 
-const refactorTags = (tags: any): any => {
-  const tagConfig = config.readConfigJson();
+export const refactorTags = (tags: any): any => {
+  const tagConfig = new Config().readConfigJson();
   tagConfig.forEach(tag => {
     const value = tags[tag.deprecatedTag];
     tags[tag.newTag] = value;
@@ -37,7 +35,7 @@ const refactorResourceTags = (client: ResourceManagementClient, resource: Generi
   })
 }
 
-// Elements
+// Resources
 
 const refactorAllResourceGroups = (client: ResourceManagementClient, rgs: string[]) => {
   if (rgs) {
@@ -63,10 +61,12 @@ const refactorAllResources = (client: ResourceManagementClient) => {
   })
 }
 
-// Program Workflow
-subscriptions.forEach(subscription => {
-  api.getClient(subscription.id).then(client => {
-    refactorAllResourceGroups(client, subscription.rgs);
-    refactorAllResources(client);
-  })
-});
+export const replaceAllTags = () => {
+  const subscriptions = new Config().readSubscriptionsJson();
+  subscriptions.forEach(subscription => {
+    api.getClient(subscription.id).then(client => {
+      refactorAllResourceGroups(client, subscription.rgs);
+      refactorAllResources(client);
+    })
+  });
+}

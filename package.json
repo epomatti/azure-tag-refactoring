@@ -4,7 +4,7 @@
   "description": "Refactoring for tags of Azure resources.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,11 @@
     "@azure/arm-resources": "^4.1.0",
     "@azure/ms-rest-nodeauth": "^3.0.10",
     "dotenv": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "jest": "^27.0.1",
+    "ts-jest": "^27.0.0",
+    "typescript": "^4.2.4"
   }
 }

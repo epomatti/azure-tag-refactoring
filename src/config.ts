@@ -1,15 +1,17 @@
-
 const fs = require('fs');
 
-export const readConfigJson = (): { deprecatedTag: string, newTag: string }[] => {
-    return parseJsonFile('config/tags.json');
+class Config {
+
+    readConfigJson(): { deprecatedTag: string, newTag: string }[] {
+        return this.parseJsonFile('config/tags.json');
+    }
+    readSubscriptionsJson(): { id: string, rgs: string[] }[] {
+        return this.parseJsonFile('config/subscriptions.json');
+    }
+    parseJsonFile(path: string) {
+        let rawdata = fs.readFileSync(path);
+        return JSON.parse(rawdata);
+    }
 }
 
-export const readSubscriptionsJson = (): { id: string, rgs: string[] }[] => {
-    return parseJsonFile('config/subscriptions.json');
-}
-
-const parseJsonFile = (path: string) => {
-    let rawdata = fs.readFileSync(path);
-    return JSON.parse(rawdata);
-}
+export default Config;
