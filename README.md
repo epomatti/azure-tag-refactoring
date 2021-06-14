@@ -2,17 +2,6 @@
 
 A script/program for refactoring (renaming) thousands of tags of all the elements, resources and resource grups, in a list of subscriptions on Azure Cloud.
 
-:construction: Under Construction :construction:
-
-Outstanding pending enhancements:
-
-- Error treatment
-- Asynchronous processing (speed)
-- Review all possibilities for tag combinations
-- Minimal permissions for the App Registration
-- Reporting
-- Rigorous testing
-
 ## What it does
 
 You provide a list of subscriptions and a pair of tags and the program iterates over the subscriptions in the list, copying the values of old tags to new tags, and deleting the old tag in the process (optionally).
