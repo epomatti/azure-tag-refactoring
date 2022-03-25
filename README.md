@@ -1,5 +1,7 @@
 # Azure Tag Renaming
 
+[![Node.js CI](https://github.com/epomatti/azure-tag-refactoring/actions/workflows/node.js.yml/badge.svg)](https://github.com/epomatti/azure-tag-refactoring/actions/workflows/node.js.yml)
+
 A script/program for refactoring (renaming) thousands of tags of all the elements, resources and resource grups, in a list of subscriptions on Azure Cloud.
 
 ## What it does
