@@ -86,9 +86,6 @@ You may also inform which resources groups names will be scanned by the script, 
 Install the software dependencies:
 
 ```sh
-#npm install -g ts-node
-#npm install -g typescript
-
 yarn install
 ```
 
