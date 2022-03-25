@@ -1,5 +1,4 @@
-import { ResourceManagementClient } from "@azure/arm-resources";
-import { GenericResourceExpanded } from "@azure/arm-resources/esm/models";
+import { ResourceManagementClient, GenericResourceExpanded } from "@azure/arm-resources";
 import Utils, { Config } from "./utils"
 
 class Program {
@@ -12,7 +11,7 @@ class Program {
         this.config = this.utils.getConfig();
     }
 
-    replaceAllTags() {
+    async replaceAllTags() {
         const subscriptions = this.config.subscriptions
         subscriptions.forEach(subscription => {
             this.utils.getArmClient(subscription.id).then(client => {
@@ -22,26 +21,30 @@ class Program {
         });
     }
 
-    refactorAllResources(client: ResourceManagementClient) {
-        client.resources.list().then(resources => {
-            resources.forEach(resource => {
-                this.refactorResourceTags(client, resource);
-            })
+    async refactorAllResources(client: ResourceManagementClient) {
+        const resources = [];
+        for await (const item of client.resources.list()) {
+            resources.push(item);
+        }
+        resources.forEach(resource => {
+            this.refactorResourceTags(client, resource);
         })
     }
 
-    refactorAllResourceGroups(client: ResourceManagementClient, rgs: string[]) {
+    async refactorAllResourceGroups(client: ResourceManagementClient, rgs: string[]) {
         if (rgs) {
             rgs.forEach(rgId => {
                 client.resourceGroups.get(rgId).then(rg => {
-                    this.refactorResourceGroupTags(client, rg.name, rg.tags);
+                    this.refactorResourceGroupTags(client, rg.name!, rg.tags);
                 })
             })
         } else {
-            client.resourceGroups.list().then(list => {
-                list.forEach(rg => {
-                    this.refactorResourceGroupTags(client, rg.name, rg.tags);
-                })
+            const resourceGroups = [];
+            for await (const item of client.resourceGroups.list()) {
+                resourceGroups.push(item);
+            }
+            resourceGroups.forEach(rg => {
+                this.refactorResourceGroupTags(client, rg.name!, rg.tags);
             })
         }
     }
@@ -50,7 +53,7 @@ class Program {
         if (resource.tags) {
             const newTags = this.refactorTags(resource.tags);
             var parameters = { tags: newTags };
-            client.resources.updateById(resource.id, client.apiVersion, parameters).catch(err => {
+            client.resources.beginUpdateById(resource.id!, client.apiVersion, parameters).catch(err => {
                 // TODO implement proper error treatment
                 console.error(err);
             })

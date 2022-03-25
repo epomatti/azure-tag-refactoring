@@ -19,7 +19,10 @@ This will be done for all the resources and resource groups that are part of all
 
 Setup the `.env` file for connectivity with the list subscriptions. 
 
-```
+```sh
+cp examples/example.env .env
+
+# .env 
 CLIENT_ID=
 APPLICATION_SECRET=
 TENANT_ID=
@@ -36,6 +39,14 @@ Configure your `config.json` with the relevant parameters:
 - **tagSwitches.tag** - Current tag that will be renamed.
 - **tagSwitches.newTag** - New named for the tag.
 - **subscriptions** - The list of subscriptions to be scanned by the script.
+
+Get it from the `examples` folder:
+
+```sh
+cp examples/example.config.json config.json
+```
+
+Sample file:
 
 ```json
 {
@@ -75,16 +86,16 @@ You may also inform which resources groups names will be scanned by the script, 
 Install the software dependencies:
 
 ```sh
-npm install -g ts-node
-npm install -g typescript
+#npm install -g ts-node
+#npm install -g typescript
 
-npm i
+yarn install
 ```
 
 Running the app:
 
 ```
-npm start
+yarn start
 ```
 
 ### Testing on Azure

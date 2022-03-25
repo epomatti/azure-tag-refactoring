@@ -18,14 +18,15 @@
   },
   "homepage": "https://github.com/epomatti/azure-tag-refactoring#readme",
   "dependencies": {
-    "@azure/arm-resources": "^4.1.0",
-    "@azure/ms-rest-nodeauth": "^3.0.10",
-    "dotenv": "^9.0.2"
+    "@azure/arm-resources": "^5.0.0",
+    "@azure/identity": "^2.0.4",
+    "dotenv": "^16.0.0",
+    "ts-node": "^10.7.0"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "jest": "^27.0.1",
-    "ts-jest": "^27.0.0",
-    "typescript": "^4.2.4"
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.3"
   }
 }

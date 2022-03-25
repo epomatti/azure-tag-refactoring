@@ -1,7 +1,6 @@
 import Program from './program';
 
-let main = () => {
-    new Program().replaceAllTags();
+async function main() {
+    await new Program().replaceAllTags();
 }
-
-main();
+main()
