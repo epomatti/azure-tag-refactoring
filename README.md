@@ -100,10 +100,14 @@ yarn start
 Create temporary resources to test on Azure:
 
 ```sh
-az group create -l "eastus" -n "rg-testingtags-001" --tags tag1=value1 tag2=value2
-az network vnet create -g "rg-testingtags-001" -n "vnet-testingtags-001" --tags tag1=value1 tag2=value2
+group='rg-testingtags-001'
+location='eastus2'
 
-az group delete -n "rg-testingtags-001" --yes
+az group create -n $group -l $location --tags tag1=value1 tag2=value2
+az network vnet create -n 'vnet-testingtags-001' -g $group  -l $location --tags tag1=value1 tag2=value2
+
+# clean your resources
+az group delete -n 'rg-testingtags-001' --yes
 ```
 
 ## Sources
